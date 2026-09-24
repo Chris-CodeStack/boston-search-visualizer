@@ -1,0 +1,215 @@
+{
+  "region": "Greater Boston, MA, USA",
+  "total_cities": 22,
+  "total_edges": 37,
+  "locations": {
+    "Boston, MA": {
+      "lat": 42.3588336,
+      "lon": -71.0578303
+    },
+    "Cambridge, MA": {
+      "lat": 42.3656347,
+      "lon": -71.1040018
+    },
+    "Somerville, MA": {
+      "lat": 42.3875968,
+      "lon": -71.0994968
+    },
+    "Brookline, MA": {
+      "lat": 42.332918,
+      "lon": -71.1187829
+    },
+    "Newton, MA": {
+      "lat": 42.3300435,
+      "lon": -71.194862
+    },
+    "Watertown, MA": {
+      "lat": 42.3652576,
+      "lon": -71.1843234
+    },
+    "Waltham, MA": {
+      "lat": 42.3762385,
+      "lon": -71.2355644
+    },
+    "Quincy, MA": {
+      "lat": 42.2509914,
+      "lon": -71.0037374
+    },
+    "Medford, MA": {
+      "lat": 42.4184296,
+      "lon": -71.1061639
+    },
+    "Malden, MA": {
+      "lat": 42.4268484,
+      "lon": -71.0683741
+    },
+    "Revere, MA": {
+      "lat": 42.4084302,
+      "lon": -71.0119948
+    },
+    "Chelsea, MA": {
+      "lat": 42.3912241,
+      "lon": -71.0369301
+    },
+    "Arlington, MA": {
+      "lat": 42.4153739,
+      "lon": -71.1564428
+    },
+    "Lexington, MA": {
+      "lat": 42.4473175,
+      "lon": -71.2245003
+    },
+    "Woburn, MA": {
+      "lat": 42.4792618,
+      "lon": -71.1522766
+    },
+    "Dedham, MA": {
+      "lat": 42.2481895,
+      "lon": -71.1734418
+    },
+    "Braintree, MA": {
+      "lat": 42.2205956,
+      "lon": -71.0041229
+    },
+    "Framingham, MA": {
+      "lat": 42.2773177,
+      "lon": -71.4165905
+    },
+    "Natick, MA": {
+      "lat": 42.2836393,
+      "lon": -71.346996
+    },
+    "Concord, MA": {
+      "lat": 42.4605189,
+      "lon": -71.3488963
+    },
+    "Burlington, MA": {
+      "lat": 42.5048167,
+      "lon": -71.1956111
+    },
+    "Lynn, MA": {
+      "lat": 42.466763,
+      "lon": -70.9494939
+    }
+  },
+  "graph": {
+    "Boston, MA": {
+      "Cambridge, MA": 2.57,
+      "Brookline, MA": 4.02,
+      "Chelsea, MA": 3.79,
+      "Quincy, MA": 9.53,
+      "Somerville, MA": 3.32,
+      "Dedham, MA": 13.03
+    },
+    "Cambridge, MA": {
+      "Boston, MA": 2.57,
+      "Somerville, MA": 1.77,
+      "Watertown, MA": 5.11,
+      "Arlington, MA": 6.32
+    },
+    "Somerville, MA": {
+      "Boston, MA": 3.32,
+      "Cambridge, MA": 1.77,
+      "Medford, MA": 2.68
+    },
+    "Brookline, MA": {
+      "Boston, MA": 4.02,
+      "Newton, MA": 4.36,
+      "Dedham, MA": 7.87
+    },
+    "Newton, MA": {
+      "Brookline, MA": 4.36,
+      "Watertown, MA": 2.8,
+      "Waltham, MA": 4.7,
+      "Dedham, MA": 6.5,
+      "Natick, MA": 9.0
+    },
+    "Watertown, MA": {
+      "Cambridge, MA": 5.11,
+      "Newton, MA": 2.8,
+      "Waltham, MA": 2.88
+    },
+    "Waltham, MA": {
+      "Watertown, MA": 2.88,
+      "Newton, MA": 4.7,
+      "Lexington, MA": 5.42,
+      "Concord, MA": 10.11,
+      "Natick, MA": 11.94
+    },
+    "Quincy, MA": {
+      "Boston, MA": 9.53,
+      "Braintree, MA": 2.49
+    },
+    "Medford, MA": {
+      "Somerville, MA": 2.68,
+      "Malden, MA": 2.22,
+      "Arlington, MA": 3.08,
+      "Woburn, MA": 6.76
+    },
+    "Malden, MA": {
+      "Medford, MA": 2.22,
+      "Revere, MA": 3.89,
+      "Woburn, MA": 7.06,
+      "Lynn, MA": 7.9
+    },
+    "Revere, MA": {
+      "Chelsea, MA": 2.14,
+      "Malden, MA": 3.89,
+      "Lynn, MA": 6.41
+    },
+    "Chelsea, MA": {
+      "Boston, MA": 3.79,
+      "Revere, MA": 2.14
+    },
+    "Arlington, MA": {
+      "Cambridge, MA": 6.32,
+      "Medford, MA": 3.08,
+      "Lexington, MA": 4.57
+    },
+    "Lexington, MA": {
+      "Arlington, MA": 4.57,
+      "Concord, MA": 6.89,
+      "Waltham, MA": 5.42,
+      "Burlington, MA": 6.03
+    },
+    "Woburn, MA": {
+      "Malden, MA": 7.06,
+      "Medford, MA": 6.76,
+      "Burlington, MA": 3.1
+    },
+    "Dedham, MA": {
+      "Newton, MA": 6.5,
+      "Boston, MA": 13.03,
+      "Braintree, MA": 12.37,
+      "Brookline, MA": 7.87,
+      "Natick, MA": 10.47
+    },
+    "Braintree, MA": {
+      "Dedham, MA": 12.37,
+      "Quincy, MA": 2.49
+    },
+    "Framingham, MA": {
+      "Natick, MA": 3.71,
+      "Concord, MA": 15.16
+    },
+    "Natick, MA": {
+      "Newton, MA": 9.0,
+      "Framingham, MA": 3.71,
+      "Waltham, MA": 11.94,
+      "Dedham, MA": 10.47
+    },
+    "Concord, MA": {
+      "Lexington, MA": 6.89,
+      "Waltham, MA": 10.11,
+      "Framingham, MA": 15.16
+    },
+    "Burlington, MA": {
+      "Woburn, MA": 3.1,
+      "Lexington, MA": 6.03
+    },
+    "Lynn, MA": {
+      "Revere, MA": 6.41,
+      "Malden, MA": 7.9
+    }
+  }
+}

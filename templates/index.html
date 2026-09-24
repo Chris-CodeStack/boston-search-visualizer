@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Visualizer - Boston</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f4f6f8;
+            color: #333333;
+        }
+
+        header {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .status {
+            font-size: 0.85rem;
+            color: #38bdf8;
+            font-weight: 500;
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .controls-panel {
+            width: 360px;
+            background-color: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        select, button {
+            padding: 8px 10px;
+            font-size: 0.9rem;
+            border-radius: 5px;
+            border: 1px solid #cbd5e1;
+        }
+
+        select {
+            background-color: #ffffff;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        button {
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: #ffffff;
+            border: none;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e2e8f0;
+        }
+
+        .card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 0.85rem;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: #0f172a;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 4px;
+        }
+
+        .card p {
+            margin: 6px 0;
+            line-height: 1.45;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+
+        #pathDisplay {
+            margin-top: 6px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 8px;
+            max-height: 120px;
+            overflow-y: auto;
+            word-break: break-word;
+        }
+
+        #map {
+            flex: 1;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 id="pageTitle">Greater Boston Search Visualizer</h1>
+        <span class="status" id="appStatus">Ready</span>
+    </header>
+
+    <div class="main-container">
+        <div class="controls-panel">
+            <div class="control-group">
+                <label for="startSelect">Start City:</label>
+                <select id="startSelect">
+                    <option value="">-- Select Source --</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="goalSelect">Destination City:</label>
+                <select id="goalSelect">
+                    <option value="">-- Select Destination --</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="algoSelect">Search Algorithm:</label>
+                <select id="algoSelect">
+                    <option value="bfs">Breadth-First Search (BFS)</option>
+                    <option value="dfs">Depth-First Search (DFS)</option>
+                    <option value="ucs">Uniform Cost Search (UCS)</option>
+                    <option value="ids">Iterative Deepening Search (IDS)</option>
+                    <option value="greedy">Greedy Best-First Search</option>
+                    <option value="astar" selected>A* Search</option>
+                </select>
+            </div>
+
+            <div class="buttons">
+                <button type="button" class="btn-primary" id="btnRun">Run Search</button>
+                <button type="button" class="btn-secondary" id="btnReset">Reset</button>
+            </div>
+
+            <div class="card">
+                <h3>Algorithm Concept Note</h3>
+                <p><strong>Main Idea:</strong> <span id="conceptMain">Finds the shortest path balancing actual cost g(n) and estimated cost h(n).</span></p>
+                <p><strong>Node Selection:</strong> <span id="conceptSelection">Selects node with minimum f(n) = g(n) + h(n).</span></p>
+                <p><strong>Information Used:</strong> <span id="conceptInfo">Actual road cost g(n) and Haversine straight-line heuristic h(n).</span></p>
+            </div>
+
+            <div class="card">
+                <h3>Execution Results</h3>
+                <div class="stat-row">
+                    <span>Driving Distance:</span>
+                    <strong id="statCost">--</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Nodes Expanded:</span>
+                    <strong id="statExpanded">--</strong>
+                </div>
+                <div style="margin-top: 8px;">
+                    <strong>Path Found:</strong>
+                    <div id="pathDisplay">None</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="map"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        const ALGO_CONCEPTS = {
+            "bfs": {
+                main: "Explores neighbors layer by layer using a FIFO queue.",
+                selection: "Pops the shallowest unvisited node first.",
+                info: "Graph depth (unweighted edge count)."
+            },
+            "dfs": {
+                main: "Explores deeply along each branch before backtracking using a LIFO stack.",
+                selection: "Pops the deepest unvisited node first.",
+                info: "Current path depth only."
+            },
+            "ucs": {
+                main: "Expands the node with the lowest cumulative path cost g(n) using a priority queue.",
+                selection: "Selects node with minimum cumulative driving distance g(n).",
+                info: "Actual road distance g(n)."
+            },
+            "ids": {
+                main: "Combines DFS memory-efficiency with BFS level-optimality by systematically increasing depth limits.",
+                selection: "Explores nodes up to depth limit L in depth-first order.",
+                info: "Iterative depth limits."
+            },
+            "greedy": {
+                main: "Directs search aggressively toward the destination using straight-line distance.",
+                selection: "Selects node with minimum heuristic value h(n) to the goal.",
+                info: "Straight-line Haversine heuristic h(n)."
+            },
+            "astar": {
+                main: "Finds the provably optimal shortest road route balancing cost g(n) and heuristic h(n).",
+                selection: "Selects node with minimum f(n) = g(n) + h(n).",
+                info: "Cumulative road cost g(n) + admissible Haversine heuristic h(n)."
+            }
+        };
+
+        const map = L.map('map').setView([42.3601, -71.0589], 11);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        let mapData = null;
+        let markers = {};
+        let activePath = null;
+        let visitedLayers = [];
+
+        function updateConceptNote(algo) {
+            const concept = ALGO_CONCEPTS[algo] || ALGO_CONCEPTS["astar"];
+            document.getElementById('conceptMain').textContent = concept.main;
+            document.getElementById('conceptSelection').textContent = concept.selection;
+            document.getElementById('conceptInfo').textContent = concept.info;
+        }
+
+        document.getElementById('algoSelect').addEventListener('change', function() {
+            updateConceptNote(this.value);
+        });
+
+        async function init() {
+            try {
+                const res = await fetch('/api/map');
+                if (!res.ok) return;
+                mapData = await res.json();
+
+                if (mapData.region) {
+                    document.getElementById('pageTitle').textContent = "Search Visualizer - " + mapData.region;
+                }
+
+                const startSelect = document.getElementById('startSelect');
+                const goalSelect = document.getElementById('goalSelect');
+                const cities = Object.keys(mapData.locations || {}).sort();
+
+                cities.forEach(city => {
+                    const opt1 = document.createElement('option');
+                    opt1.value = city;
+                    opt1.textContent = city;
+                    startSelect.appendChild(opt1);
+
+                    const opt2 = document.createElement('option');
+                    opt2.value = city;
+                    opt2.textContent = city;
+                    goalSelect.appendChild(opt2);
+                });
+
+                if (cities.includes("Boston, MA") && cities.includes("Concord, MA")) {
+                    startSelect.value = "Boston, MA";
+                    goalSelect.value = "Concord, MA";
+                } else if (cities.length >= 2) {
+                    startSelect.selectedIndex = 1;
+                    goalSelect.selectedIndex = cities.length;
+                }
+
+                const drawn = new Set();
+                const graph = mapData.graph || {};
+                const locs = mapData.locations || {};
+                const bounds = [];
+
+                for (const [city, neighbors] of Object.entries(graph)) {
+                    for (const neighbor of Object.keys(neighbors)) {
+                        const edgeKey = [city, neighbor].sort().join("<->");
+                        if (!drawn.has(edgeKey) && locs[city] && locs[neighbor]) {
+                            drawn.add(edgeKey);
+                            L.polyline([
+                                [locs[city].lat, locs[city].lon],
+                                [locs[neighbor].lat, locs[neighbor].lon]
+                            ], { color: '#94a3b8', weight: 2, opacity: 0.6 }).addTo(map);
+                        }
+                    }
+                }
+
+                for (const [city, coords] of Object.entries(locs)) {
+                    bounds.push([coords.lat, coords.lon]);
+                    const marker = L.circleMarker([coords.lat, coords.lon], {
+                        radius: 5,
+                        fillColor: '#2563eb',
+                        color: '#ffffff',
+                        weight: 1.5,
+                        fillOpacity: 1
+                    }).addTo(map);
+                    marker.bindPopup(`<b>${city}</b>`);
+                    markers[city] = marker;
+                }
+
+                if (bounds.length > 0) {
+                    map.fitBounds(bounds, { padding: [25, 25] });
+                }
+            } catch (err) {
+                console.error("Error loading map:", err);
+            }
+        }
+
+        function clearVisuals() {
+            if (activePath) {
+                map.removeLayer(activePath);
+                activePath = null;
+            }
+            visitedLayers.forEach(layer => map.removeLayer(layer));
+            visitedLayers = [];
+            for (const marker of Object.values(markers)) {
+                marker.setStyle({ fillColor: '#2563eb', radius: 5 });
+            }
+        }
+
+        document.getElementById('btnRun').addEventListener('click', async function() {
+            const start = document.getElementById('startSelect').value;
+            const goal = document.getElementById('goalSelect').value;
+            const algo = document.getElementById('algoSelect').value;
+
+            if (!start || !goal) {
+                alert("Please select both a start and destination city.");
+                return;
+            }
+
+            clearVisuals();
+            document.getElementById('appStatus').textContent = "Searching...";
+
+            try {
+                const res = await fetch('/api/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ start, goal, algorithm: algo })
+                });
+
+                const data = await res.json();
+                document.getElementById('appStatus').textContent = "Completed";
+                document.getElementById('statCost').textContent = data.cost !== undefined ? `${data.cost} miles` : '--';
+                document.getElementById('statExpanded').textContent = data.nodes_expanded !== undefined ? data.nodes_expanded : '--';
+
+                if (data.visited_order && data.visited_order.length > 0) {
+                    data.visited_order.forEach((city, index) => {
+                        setTimeout(() => {
+                            if (markers[city] && city !== start && city !== goal) {
+                                markers[city].setStyle({ fillColor: '#f59e0b', radius: 6 });
+                            }
+                        }, index * 40);
+                    } );
+                }
+
+                setTimeout(() => {
+                    if (data.path && data.path.length > 0) {
+                        document.getElementById('pathDisplay').textContent = data.path.join(" ➔ ");
+                        const latlngs = data.path.map(c => [mapData.locations[c].lat, mapData.locations[c].lon]);
+                        activePath = L.polyline(latlngs, { color: '#16a34a', weight: 5, opacity: 0.9 }).addTo(map);
+
+                        if (markers[start]) markers[start].setStyle({ fillColor: '#10b981', radius: 8 });
+                        if (markers[goal]) markers[goal].setStyle({ fillColor: '#ef4444', radius: 8 });
+                    } else {
+                        document.getElementById('pathDisplay').textContent = "No path found between selected locations.";
+                    }
+                }, (data.visited_order ? data.visited_order.length : 0) * 40 + 100);
+
+            } catch (err) {
+                console.error("Search failed:", err);
+                document.getElementById('appStatus').textContent = "Error";
+            }
+        });
+
+        document.getElementById('btnReset').addEventListener('click', function() {
+            clearVisuals();
+            document.getElementById('statCost').textContent = '--';
+            document.getElementById('statExpanded').textContent = '--';
+            document.getElementById('pathDisplay').textContent = 'None';
+            document.getElementById('appStatus').textContent = 'Ready';
+        });
+
+        init();
+    </script>
+</body>
+</html>
