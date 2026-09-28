@@ -73,12 +73,7 @@ ROAD_CONNECTIONS = [
 
 USER_AGENT = "Boston-Map-Search-Visualizer/1.0 (academic-ai-project)"
 
-
 def haversine_distance(coord1, coord2):
-    """
-    Fallback straight-line (great-circle) distance in miles.
-    coord = (lat, lon)
-    """
     lat1, lon1 = coord1
     lat2, lon2 = coord2
     r_earth = 3958.8
@@ -93,9 +88,6 @@ def haversine_distance(coord1, coord2):
 
 
 def fetch_coordinates(city_name):
-    """
-    Fetch latitude and longitude from Nominatim OpenStreetMap API.
-    """
     url = "https://nominatim.openstreetmap.org/search"
     params = {
         "q": city_name,
@@ -121,10 +113,6 @@ def fetch_coordinates(city_name):
 
 
 def fetch_road_distance(coord1, coord2):
-    """
-    Fetch driving road distance in miles from OSRM Routing API.
-    coord = (lat, lon)
-    """
     lat1, lon1 = coord1
     lat2, lon2 = coord2
     url = f"http://router.project-osrm.org/route/v1/driving/{lon1},{lat1};{lon2},{lat2}"
@@ -145,9 +133,6 @@ def fetch_road_distance(coord1, coord2):
 
 
 def build_graph():
-    """
-    Build the map graph and save to map_data.json.
-    """
     print(f"Building map graph for region: {REGION_NAME}")
     print(f"Total locations to geocode: {len(CITIES)}")
 
@@ -159,7 +144,6 @@ def build_graph():
             locations[city] = coords
         else:
             print(f"  [Error] Could not find coordinates for {city}")
-        # This is to comply with Nominatim usage policy (1 request/second)
         time.sleep(1.0)
 
     graph = {city: {} for city in locations}

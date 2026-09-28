@@ -18,7 +18,6 @@ app = Flask(__name__)
 MAP_DATA_FILE = "map_data.json"
 
 def load_map_data():
-    """Load graph and location data from map_data.json."""
     if os.path.exists(MAP_DATA_FILE):
         try:
             with open(MAP_DATA_FILE, "r", encoding="utf-8") as f:
@@ -36,20 +35,15 @@ def load_map_data():
 
 @app.route("/")
 def index():
-    """Renders the main map visualizer page."""
     return render_template("index.html")
 
 @app.route("/api/map", methods=["GET"])
 def get_map():
-    """Returns map locations and graph connections."""
     data = load_map_data()
     return jsonify(data)
 
 @app.route("/api/search", methods=["POST"])
 def search():
-    """
-    Executes the requested search algorithm on the Boston road graph.
-    """
     payload = request.get_json() or {}
     start = payload.get("start", "").strip()
     goal = payload.get("goal", "").strip()

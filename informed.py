@@ -1,12 +1,3 @@
-"""
-informed.py
-===========
-Implementation of informed (heuristic) search algorithms:
-  - Straight-Line Haversine Heuristic h(n)
-  - Greedy Best-First Search
-  - A* Search
-"""
-
 import math
 import heapq
 
@@ -17,7 +8,7 @@ def haversine_heuristic(node, goal, locations):
 
     lat1, lon1 = locations[node]["lat"], locations[node]["lon"]
     lat2, lon2 = locations[goal]["lat"], locations[goal]["lon"]
-    r_earth = 3958.8  # Earth radius in miles
+    r_earth = 3958.8
 
     phi1, phi2 = math.radians(lat1), math.radians(lat2)
     dphi = math.radians(lat2 - lat1)
@@ -67,11 +58,6 @@ def greedy_best_first_search(graph, start, goal, locations):
 
 
 def a_star_search(graph, start, goal, locations):
-    """
-    A* Search
-    Minimizes f(n) = g(n) + h(n).
-    Guarantees an optimal path when h(n) is admissible (Haversine straight-line distance).
-    """
     counter = 0
     h_start = haversine_heuristic(start, goal, locations)
     pq = [(h_start, counter, 0.0, start, [start])]

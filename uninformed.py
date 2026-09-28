@@ -67,11 +67,6 @@ def depth_first_search(graph, start, goal):
     return {"path": [], "cost": 0.0, "visited_order": visited_order, "nodes_expanded": len(visited_order)}
 
 def uniform_cost_search(graph, start, goal):
-    """
-    Uniform-Cost Search (UCS)
-    Expands lowest path-cost (g) node first using a min-priority queue.
-    Guarantees the optimal road-distance path on positive edge costs.
-    """
     counter = 0
     pq = [(0.0, counter, start, [start])]
     visited_order = []
@@ -102,10 +97,6 @@ def uniform_cost_search(graph, start, goal):
     return {"path": [], "cost": 0.0, "visited_order": visited_order, "nodes_expanded": len(visited_order)}
 
 def iterative_deepening_search(graph, start, goal, max_depth=50):
-    """
-    Iterative Deepening Search (IDS)
-    Combines DFS space efficiency with BFS level-by-level completeness.
-    """
     visited_order = []
 
     def dls(path, depth):
